@@ -1,0 +1,65 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://stock.gd" type="Script" id=1]
+[ext_resource path="res://frame.png" type="Texture" id=2]
+[ext_resource path="res://BRLNSDB.TTF" type="DynamicFontData" id=3]
+
+[sub_resource type="DynamicFont" id=1]
+size = 24
+use_mipmaps = true
+use_filter = true
+font_data = ExtResource( 3 )
+
+[node name="stock" type="Node2D"]
+script = ExtResource( 1 )
+stock_name = "GLD"
+
+[node name="frame" type="Sprite" parent="."]
+position = Vector2( 79, 80 )
+texture = ExtResource( 2 )
+
+[node name="HTTPRequest" type="HTTPRequest" parent="."]
+
+[node name="Button_any" type="Button" parent="."]
+visible = false
+margin_left = 57.0
+margin_top = 92.0
+margin_right = 107.0
+margin_bottom = 112.0
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 600.0
+autostart = true
+
+[node name="stock_name" type="Label" parent="."]
+margin_left = 28.0
+margin_top = 27.0
+margin_right = 130.0
+margin_bottom = 55.0
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_fonts/font = SubResource( 1 )
+text = "VXUS"
+align = 1
+
+[node name="stock_price" type="Label" parent="."]
+margin_left = 30.0
+margin_top = 66.0
+margin_right = 132.0
+margin_bottom = 94.0
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_fonts/font = SubResource( 1 )
+text = "VXUS"
+align = 1
+
+[node name="stock_change_pct" type="Label" parent="."]
+margin_left = 32.0
+margin_top = 103.0
+margin_right = 134.0
+margin_bottom = 131.0
+custom_colors/font_color = Color( 0.109804, 1, 0.00784314, 1 )
+custom_fonts/font = SubResource( 1 )
+text = "VXUS"
+align = 1
+
+[connection signal="pressed" from="Button_any" to="." method="_on_Button_any_pressed"]
+[connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]

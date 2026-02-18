@@ -1,0 +1,55 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://WeatherScene.gd" type="Script" id=1]
+[ext_resource path="res://frame.png" type="Texture" id=2]
+[ext_resource path="res://cloudy.png" type="Texture" id=3]
+[ext_resource path="res://sunny.png" type="Texture" id=4]
+[ext_resource path="res://rain.png" type="Texture" id=5]
+[ext_resource path="res://BRLNSDB.TTF" type="DynamicFontData" id=6]
+
+[sub_resource type="DynamicFont" id=1]
+size = 19
+use_mipmaps = true
+use_filter = true
+font_data = ExtResource( 6 )
+
+[node name="WeatherScene" type="Node2D"]
+script = ExtResource( 1 )
+zip_code = "27312"
+
+[node name="HTTPRequest" type="HTTPRequest" parent="."]
+
+[node name="frame" type="Sprite" parent="."]
+position = Vector2( 80, 80 )
+texture = ExtResource( 2 )
+
+[node name="SunIcon" type="Sprite" parent="."]
+visible = false
+position = Vector2( 79, 75 )
+texture = ExtResource( 4 )
+
+[node name="CloudIcon" type="Sprite" parent="."]
+visible = false
+position = Vector2( 80, 78 )
+texture = ExtResource( 3 )
+
+[node name="RainIcon" type="Sprite" parent="."]
+visible = false
+position = Vector2( 80, 129 )
+texture = ExtResource( 5 )
+
+[node name="TemperatureLabel" type="Label" parent="."]
+margin_left = 45.0
+margin_top = 61.0
+margin_right = 115.0
+margin_bottom = 91.0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_fonts/font = SubResource( 1 )
+text = "...wait..."
+align = 1
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 740.0
+autostart = true
+
+[connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]
