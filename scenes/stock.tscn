@@ -1,0 +1,65 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource type="Script" uid="uid://c8bf5g7fbpwf4" path="res://scripts/stock.gd" id="1"]
+[ext_resource type="Texture2D" uid="uid://n5yqrwjdrvgn" path="res://assets/images/frame.png" id="2"]
+[ext_resource type="FontFile" uid="uid://qyo7d4b1skbm" path="res://assets/fonts/BRLNSDB.TTF" id="3"]
+
+[sub_resource type="FontFile" id=1]
+size = 24
+use_mipmaps = true
+use_filter = true
+font_data = ExtResource( 3 )
+
+[node name="stock" type="Node2D"]
+script = ExtResource( 1 )
+stock_name = "GLD"
+
+[node name="frame" type="Sprite2D" parent="."]
+position = Vector2( 79, 80 )
+texture = ExtResource( 2 )
+
+[node name="HTTPRequest" type="HTTPRequest" parent="."]
+
+[node name="Button_any" type="Button" parent="."]
+visible = false
+offset_left = 57.0
+offset_top = 92.0
+offset_right = 107.0
+offset_bottom = 112.0
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 600.0
+autostart = true
+
+[node name="stock_name" type="Label" parent="."]
+offset_left = 28.0
+offset_top = 27.0
+offset_right = 130.0
+offset_bottom = 55.0
+theme_override_colors/font_color = Color( 1, 1, 1, 1 )
+theme_override_fonts/font = SubResource( 1 )
+text = "VXUS"
+align = 1
+
+[node name="stock_price" type="Label" parent="."]
+offset_left = 30.0
+offset_top = 66.0
+offset_right = 132.0
+offset_bottom = 94.0
+theme_override_colors/font_color = Color( 1, 1, 1, 1 )
+theme_override_fonts/font = SubResource( 1 )
+text = "VXUS"
+align = 1
+
+[node name="stock_change_pct" type="Label" parent="."]
+offset_left = 32.0
+offset_top = 103.0
+offset_right = 134.0
+offset_bottom = 131.0
+theme_override_colors/font_color = Color( 0.109804, 1, 0.00784314, 1 )
+theme_override_fonts/font = SubResource( 1 )
+text = "VXUS"
+align = 1
+
+[connection signal="pressed" from="Button_any" to="." method="_on_Button_any_pressed"]
+[connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]

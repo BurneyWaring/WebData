@@ -6,18 +6,19 @@
 ;   [section] ; section goes between []
 ;   param=value ; assign values to parameters
 
-config_version=4
+config_version=5
 
 [application]
 
 config/name="Web Data - 2026 Burney Waring"
-run/main_scene="res://main.tscn"
-config/icon="res://icon.png"
+run/main_scene="res://scenes/main.tscn"
+config/features=PackedStringArray("4.4")
+config/icon="res://assets/images/icon.png"
 
 [display]
 
-window/size/width=522
-window/size/height=353
+window/size/viewport_width=522
+window/size/viewport_height=353
 window/size/resizable=false
 
 [gui]
@@ -30,7 +31,6 @@ common/enable_pause_aware_picking=true
 
 [rendering]
 
+environment/defaults/default_environment="res://default_env.tres"
 quality/driver/driver_name="GLES2"
 vram_compression/import_etc=true
-vram_compression/import_etc2=false
-environment/default_environment="res://default_env.tres"

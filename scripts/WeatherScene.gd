@@ -3,15 +3,15 @@
 # Shows temperature, sunny/cloudy icons, and rain icon for a US ZIP code
 extends Node2D
 
-export(String) var zip_code
+@export var zip_code: String
 
-onready var http_request = $HTTPRequest
+@onready var http_request = $HTTPRequest
 
 # UI nodes
-onready var temperature_label = $TemperatureLabel
-onready var sun_icon = $SunIcon
-onready var cloud_icon = $CloudIcon
-onready var rain_icon = $RainIcon
+@onready var temperature_label = $TemperatureLabel
+@onready var sun_icon = $SunIcon
+@onready var cloud_icon = $CloudIcon
+@onready var rain_icon = $RainIcon
 
 # Tracking for chained requests
 var current_request_type: String = ""   # "geocode" or "weather"
@@ -22,7 +22,7 @@ signal weather_updated(zip, temp_f, is_raining, is_sunny, sky_condition)
 signal weather_error(zip, message)
 
 func _ready():
-	http_request.connect("request_completed", self, "_on_request_completed")
+	http_request.connect("request_completed", Callable(self, "_on_request_completed"))
 	
 	# Hide all icons initially
 	if sun_icon: sun_icon.visible = false
@@ -36,7 +36,7 @@ func _ready():
 
 # Call this function to fetch weather for any ZIP code
 func fetch_weather(zip_code: String) -> void:
-	if zip_code.empty():
+	if zip_code.is_empty():
 		_handle_error(zip_code, "Zip code cannot be empty")
 		return
 	
@@ -46,11 +46,11 @@ func fetch_weather(zip_code: String) -> void:
 	# Step 1: Geocode ZIP to lat/lon
 	var geocode_url = "https://geocoding-api.open-meteo.com/v1/search?name=" + clean_zip + "&count=1&format=json"
 	
-	var headers = PoolStringArray([
+	var headers = PackedStringArray([
 		"User-Agent: Godot Weather Scene"
 	])
 	
-	var error = http_request.request(geocode_url, headers, true, HTTPClient.METHOD_GET)
+	var error = http_request.request(geocode_url, headers, HTTPClient.METHOD_GET)
 	if error != OK:
 		_handle_error(clean_zip, "Geocode request failed (err " + str(error) + ")")
 		return
@@ -59,7 +59,7 @@ func fetch_weather(zip_code: String) -> void:
 	print("Geocoding ZIP: ", clean_zip)
 
 func _on_request_completed(result, response_code, headers, body):
-	if current_request_type.empty():
+	if current_request_type.is_empty():
 		return
 	
 	var zip = current_zip
@@ -72,13 +72,13 @@ func _on_request_completed(result, response_code, headers, body):
 			return
 		
 		var json_string = body.get_string_from_utf8()
-		var parse_result = JSON.parse(json_string)
-		if parse_result.error != OK:
-			_handle_error(zip, "Geocode JSON error: " + parse_result.error_string)
+		var json = JSON.new()
+		var err = json.parse(json_string)
+		if err != OK:
+			print("JSON parse error: ", json.get_error_message())
 			return
-		
-		var data = parse_result.result
-		if not data.has("results") or data.results.empty():
+		var data = json.get_data()
+		if not data.has("results") or data.results.is_empty():
 			_handle_error(zip, "ZIP not found")
 			return
 		
@@ -96,7 +96,7 @@ func _on_request_completed(result, response_code, headers, body):
 			"&timezone=America/New_York"
 		)
 		
-		var error = http_request.request(weather_url, PoolStringArray(["User-Agent: Godot Weather Scene"]), true, HTTPClient.METHOD_GET)
+		var error = http_request.request(weather_url, PackedStringArray(["User-Agent: Godot Weather Scene"]), HTTPClient.METHOD_GET)
 		if error != OK:
 			_handle_error(zip, "Weather request failed (err " + str(error) + ")")
 			return
@@ -113,12 +113,12 @@ func _on_request_completed(result, response_code, headers, body):
 			return
 		
 		var json_string = body.get_string_from_utf8()
-		var parse_result = JSON.parse(json_string)
-		if parse_result.error != OK:
-			_handle_error(zip, "Weather JSON error: " + parse_result.error_string)
+		var json = JSON.new()
+		var err = json.parse(json_string)
+		if err != OK:
+			print("JSON parse error: ", json.get_error_message())
 			return
-		
-		var data = parse_result.result
+		var data = json.get_data()
 		if not data.has("current"):
 			_handle_error(zip, "No current weather data")
 			return

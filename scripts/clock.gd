@@ -12,7 +12,7 @@ func _ready():
 
 func _process(delta):
 #	pass
-	var timeDict = OS.get_time()
+	var timeDict = Time.get_time_dict_from_system()
 	var hour = timeDict.hour
 	var minute = timeDict.minute
 	var seconds = timeDict.second

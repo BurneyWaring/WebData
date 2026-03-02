@@ -4,9 +4,9 @@
 
 extends Node2D
 
-export(String) var stock_name #= "PG" See the inspector for this node when you click in the scene window
+@export var stock_name: String #= "PG" See the inspector for this node when you click in the scene window
 
-onready var http_request = $HTTPRequest
+@onready var http_request = $HTTPRequest
 
 # Track what we're currently fetching (since HTTPRequest is single-use async)
 var current_symbol: String = ""
@@ -17,20 +17,20 @@ signal price_fetched(symbol, price, signd, chang, change_pct)
 func _ready():
 	_on_Timer_timeout()
 	# Connect HTTPRequest signal
-	http_request.connect("request_completed", self, "_on_request_completed")
+	http_request.connect("request_completed", Callable(self, "_on_request_completed"))
 	
 # Generalized function to fetch price for any symbol
 # Call it like: fetch_price("PG")
 # When data arrives → prints to console + emits signal
 func fetch_price(symbol: String) -> void:
-	if symbol.empty():
+	if symbol.is_empty():
 		print("Error: Symbol cannot be empty")
 		return
 	
 	var clean_symbol = symbol.to_upper().strip_edges()
 	
 	var url = "https://query1.finance.yahoo.com/v8/finance/chart/" + clean_symbol + "?interval=1d&range=1d"
-	var headers = PoolStringArray([
+	var headers = PackedStringArray([
 		"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
 	])
 	
@@ -45,7 +45,7 @@ func fetch_price(symbol: String) -> void:
 
 # Called automatically when HTTPRequest finishes
 func _on_request_completed(result, response_code, headers, body):
-	if current_symbol.empty():
+	if current_symbol.is_empty():
 		return  # No active request
 	
 	var symbol = current_symbol
@@ -61,15 +61,14 @@ func _on_request_completed(result, response_code, headers, body):
 		return
 	
 	var json_string = body.get_string_from_utf8()
-	var parse_result = JSON.parse(json_string)
-	
-	if parse_result.error != OK:
-		print("JSON parse error for ", symbol, ": ", parse_result.error_string)
+	var json = JSON.new()
+	var err = json.parse(json_string)
+	if err != OK:
+		print("JSON parse error: ", json.get_error_message())
 		return
+	var data = json.get_data()
 	
-	var data = parse_result.result
-	
-	if not data.has("chart") or not data.chart.has("result") or data.chart.result.empty():
+	if not data.has("chart") or not data.chart.has("result") or data.chart.result.is_empty():
 		print("No valid chart data returned for ", symbol)
 		return
 	
@@ -104,9 +103,9 @@ func _on_request_completed(result, response_code, headers, body):
 	$stock_price.text = "%.2f" % price
 	$stock_change_pct.text = "%.2f" % change_pct + "%"
 	if change_pct < 0:
-		$stock_change_pct.add_color_override("font_color", Color("#ff0101"))
+		$stock_change_pct.add_theme_color_override("font_color", Color("#ff0101"))
 	else:
-		$stock_change_pct.add_color_override("font_color", Color("#1cff02"))
+		$stock_change_pct.add_theme_color_override("font_color", Color("#1cff02"))
 	
 
 

@@ -1,0 +1,55 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource type="Script" uid="uid://b8kfg4sxfklh" path="res://scripts/WeatherScene.gd" id="1"]
+[ext_resource type="Texture2D" uid="uid://n5yqrwjdrvgn" path="res://assets/images/frame.png" id="2"]
+[ext_resource type="Texture2D" uid="uid://cuma7rxrcxw6" path="res://assets/images/cloudy.png" id="3"]
+[ext_resource type="Texture2D" uid="uid://cuil3cqc1wa7i" path="res://assets/images/sunny.png" id="4"]
+[ext_resource type="Texture2D" uid="uid://b1u4qtyntc6jm" path="res://assets/images/rain.png" id="5"]
+[ext_resource type="FontFile" uid="uid://qyo7d4b1skbm" path="res://assets/fonts/BRLNSDB.TTF" id="6"]
+
+[sub_resource type="FontFile" id=1]
+size = 19
+use_mipmaps = true
+use_filter = true
+font_data = ExtResource( 6 )
+
+[node name="WeatherScene" type="Node2D"]
+script = ExtResource( 1 )
+zip_code = "27312"
+
+[node name="HTTPRequest" type="HTTPRequest" parent="."]
+
+[node name="frame" type="Sprite2D" parent="."]
+position = Vector2( 80, 80 )
+texture = ExtResource( 2 )
+
+[node name="SunIcon" type="Sprite2D" parent="."]
+visible = false
+position = Vector2( 79, 75 )
+texture = ExtResource( 4 )
+
+[node name="CloudIcon" type="Sprite2D" parent="."]
+visible = false
+position = Vector2( 80, 78 )
+texture = ExtResource( 3 )
+
+[node name="RainIcon" type="Sprite2D" parent="."]
+visible = false
+position = Vector2( 80, 129 )
+texture = ExtResource( 5 )
+
+[node name="TemperatureLabel" type="Label" parent="."]
+offset_left = 45.0
+offset_top = 61.0
+offset_right = 115.0
+offset_bottom = 91.0
+theme_override_colors/font_color = Color( 0, 0, 0, 1 )
+theme_override_fonts/font = SubResource( 1 )
+text = "...wait..."
+align = 1
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 740.0
+autostart = true
+
+[connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]
